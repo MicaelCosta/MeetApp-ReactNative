@@ -19,14 +19,27 @@ export default (isSigned = false) =>
                     SignIn,
                     SignUp,
                 }),
-                App: createBottomTabNavigator({
-                    Dashboard,
-                    Inscricoes,
-                    Perfil,
-                }),
+                App: createBottomTabNavigator(
+                    {
+                        Dashboard,
+                        Inscricoes,
+                        Perfil,
+                    },
+                    {
+                        tabBarOptions: {
+                            keyboardHidesTabBar: true,
+                            activeTintColor: '#fff',
+                            inactiveTintColor: 'rgba(255,255,255,0.6)',
+                            style: {
+                                backgroundColor: '#000',
+                            },
+                        },
+                    }
+                ),
             },
             {
-                initialRouteName: isSigned ? 'App' : 'Sign',
+                // initialRouteName: isSigned ? 'App' : 'Sign',
+                initialRouteName: 'App',
             }
         )
     );
