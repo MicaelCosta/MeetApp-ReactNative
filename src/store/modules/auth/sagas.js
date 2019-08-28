@@ -3,7 +3,7 @@ import { takeLatest, call, put, all } from 'redux-saga/effects';
 
 import api from '~/services/api';
 
-import { signInSuccess, signFailure } from './actions';
+import { signInSuccess, signUpSuccess, signFailure } from './actions';
 
 export function* signIn({ payload }) {
     try {
@@ -19,8 +19,6 @@ export function* signIn({ payload }) {
         api.defaults.headers.Authorization = `Bearer ${token}`;
 
         yield put(signInSuccess(token, user));
-
-        // history.push('/dashboard');
     } catch (err) {
         Alert.alert(
             'Erro no login',
@@ -40,7 +38,9 @@ export function* signUp({ payload }) {
             password,
         });
 
-        // history.push('/');
+        Alert.alert('Sucesso!', 'Cadastro realizado com sucesso');
+
+        yield put(signUpSuccess());
     } catch (err) {
         Alert.alert(
             'Erro no cadastro',
@@ -61,13 +61,8 @@ export function setToken({ payload }) {
     }
 }
 
-export function signOut() {
-    // history.push('/');
-}
-
 export default all([
     takeLatest('persist/REHYDRATE', setToken),
     takeLatest('@auth/SIGN_IN_REQUEST', signIn),
     takeLatest('@auth/SIGN_UP_REQUEST', signUp),
-    takeLatest('@auth/SIGN_OUT', signOut),
 ]);

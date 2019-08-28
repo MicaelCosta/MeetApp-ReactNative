@@ -1,13 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { TouchableOpacity, Alert } from 'react-native';
-import { format, subDays, addDays } from 'date-fns';
+import { format, subDays, addDays, parseISO } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Background from '~/components/Background';
 import Header from '~/components/Header';
-
-import api from '~/services/api';
 
 import {
     Container,
@@ -22,6 +20,8 @@ import {
     InfoMeetup,
     ButtonContainer,
 } from './styles';
+
+import api from '~/services/api';
 
 export default function Dashboard() {
     const [date, setDate] = useState(new Date());
@@ -42,7 +42,7 @@ export default function Dashboard() {
 
     async function handleInscricao(meetupId) {
         try {
-            await api.post(`subscription/${meetupId}`);
+            await api.post(`meetups/${meetupId}/subscriptions`);
 
             Alert.alert('Sucesso!', 'Inscrição realizada com sucesso!');
         } catch (err) {
@@ -51,12 +51,15 @@ export default function Dashboard() {
     }
 
     useEffect(() => {
-        async function loadlMeetups() {
-            const response = await api.get(`meetups/?date=${date}`);
+        async function loadMeetups() {
+            const queryDate = format(date, "yyyy'-'MM'-'dd", { locale: pt });
+
+            const response = await api.get(`meetups?date=${queryDate}`);
+            // const response = await api.get(`meetups`);
 
             const data = response.data.map(meetup => {
                 const dateFormatted = format(
-                    meetup.date,
+                    parseISO(meetup.date_meetup),
                     "d 'de' MMMM ', às ' H'h'",
                     {
                         locale: pt,
@@ -72,7 +75,7 @@ export default function Dashboard() {
             setMeetups(data);
         }
 
-        loadlMeetups();
+        loadMeetups();
     }, [date]);
 
     return (
