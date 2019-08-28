@@ -7,7 +7,7 @@ export const Container = styled.View`
     flex: 1;
 `;
 
-export const Form = styled.View`
+export const Form = styled.ScrollView`
     margin: 20px;
 `;
 

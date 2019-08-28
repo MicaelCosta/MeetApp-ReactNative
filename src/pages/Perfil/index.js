@@ -32,6 +32,12 @@ export default function Perfil() {
     const passwordRef = useRef();
     const newPasswordRef = useRef();
 
+    useEffect(() => {
+        setOldPassword('');
+        setPassword('');
+        setConfirmPassword('');
+    }, [profile]);
+
     function handleSubmit() {
         dispatch(
             updateProfileRequest({

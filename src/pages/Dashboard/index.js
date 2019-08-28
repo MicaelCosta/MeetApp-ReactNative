@@ -28,7 +28,7 @@ export default function Dashboard() {
     const [meetups, setMeetups] = useState([]);
 
     const dataAtual = useMemo(
-        () => format(date, "d 'de' MMMM", { locale: pt }),
+        () => format(date, "dd 'de' MMMM", { locale: pt }),
         [date]
     );
 
@@ -52,15 +52,13 @@ export default function Dashboard() {
 
     useEffect(() => {
         async function loadMeetups() {
-            const queryDate = format(date, "yyyy'-'MM'-'dd", { locale: pt });
-
-            const response = await api.get(`meetups?date=${queryDate}`);
+            const response = await api.get(`meetups?date=${date}`);
             // const response = await api.get(`meetups`);
 
             const data = response.data.map(meetup => {
                 const dateFormatted = format(
                     parseISO(meetup.date_meetup),
-                    "d 'de' MMMM ', às ' H'h'",
+                    "dd 'de' MMMM ', às ' H'h'",
                     {
                         locale: pt,
                     }
@@ -103,7 +101,7 @@ export default function Dashboard() {
                                 source={{
                                     uri: item.file
                                         ? item.file.url
-                                        : `https://api.adorable.io/avatars/285/abott@adorable.png`,
+                                        : `https://api.adorable.io/avatars/285/${item.id}.png`,
                                 }}
                             />
 
@@ -131,13 +129,13 @@ export default function Dashboard() {
                                 </DescricaoMeetup>
                             </Meetup>
 
-                            <ButtonContainer
-                                past={item.past}
-                                disable={item.past}
-                                onPress={() => handleInscricao(item.id)}
-                            >
-                                Realizar inscrição
-                            </ButtonContainer>
+                            {!item.past ? (
+                                <ButtonContainer
+                                    onPress={() => handleInscricao(item.id)}
+                                >
+                                    Realizar inscrição
+                                </ButtonContainer>
+                            ) : null}
                         </ContentMeetup>
                     )}
                 />

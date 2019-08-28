@@ -30,7 +30,7 @@ export default function Inscricoes() {
             const data = response.data.map(inscricao => {
                 const dateFormatted = format(
                     parseISO(inscricao.meetup.date_meetup),
-                    "d 'de' MMMM ', às ' HH'h'",
+                    "dd 'de' MMMM ', às ' HH'h'",
                     {
                         locale: pt,
                     }
@@ -77,7 +77,7 @@ export default function Inscricoes() {
                                 source={{
                                     uri: item.meetup.file
                                         ? item.meetup.file.url
-                                        : `https://api.adorable.io/avatars/285/abott@adorable.png`,
+                                        : `https://api.adorable.io/avatars/285/${item.id}.png`,
                                 }}
                                 alt="banner"
                             />

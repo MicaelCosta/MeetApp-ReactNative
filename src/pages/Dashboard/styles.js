@@ -64,5 +64,4 @@ export const ButtonContainer = styled(Button)`
     font-size: 16px;
     height: 40px;
     margin-bottom: 20px;
-    opacity: ${props => (props.past ? 0.5 : 1)};
 `;
