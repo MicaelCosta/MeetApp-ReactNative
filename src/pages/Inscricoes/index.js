@@ -9,6 +9,7 @@ import Header from '~/components/Header';
 
 import {
     Container,
+    Mensagem,
     ListMeetup,
     Content,
     Image,
@@ -68,47 +69,61 @@ export default function Inscricoes() {
             <Header />
 
             <Container>
-                <ListMeetup
-                    data={inscricoes}
-                    keyExtractor={item => String(item.id)}
-                    renderItem={({ item }) => (
-                        <Content>
-                            <Image
-                                source={{
-                                    uri: item.meetup.file
-                                        ? item.meetup.file.url
-                                        : `https://api.adorable.io/avatars/285/${item.id}.png`,
-                                }}
-                                alt="banner"
-                            />
-                            <Meetup>
-                                <MeetupTitle>{item.meetup.title}</MeetupTitle>
-                                <Descricao>
-                                    <Icon name="event" size={15} color="#999" />
-                                    {item.dateFormatted}
-                                </Descricao>
-                                <Descricao>
-                                    <Icon name="place" size={15} color="#999" />
-                                    {item.meetup.location}
-                                </Descricao>
-                                <Descricao>
-                                    <Icon
-                                        name="person"
-                                        size={15}
-                                        color="#999"
-                                    />
-                                    Organizador: {item.meetup.user.name}
-                                </Descricao>
-                            </Meetup>
+                {!inscricoes || inscricoes.length <= 0 ? (
+                    <Mensagem>Você não possui nenhuma inscrição</Mensagem>
+                ) : (
+                    <ListMeetup
+                        data={inscricoes}
+                        keyExtractor={item => String(item.id)}
+                        renderItem={({ item }) => (
+                            <Content>
+                                <Image
+                                    source={{
+                                        uri: item.meetup.file
+                                            ? item.meetup.file.url
+                                            : `https://api.adorable.io/avatars/285/${item.id}.png`,
+                                    }}
+                                    alt="banner"
+                                />
+                                <Meetup>
+                                    <MeetupTitle>
+                                        {item.meetup.title}
+                                    </MeetupTitle>
+                                    <Descricao>
+                                        <Icon
+                                            name="event"
+                                            size={15}
+                                            color="#999"
+                                        />
+                                        {item.dateFormatted}
+                                    </Descricao>
+                                    <Descricao>
+                                        <Icon
+                                            name="place"
+                                            size={15}
+                                            color="#999"
+                                        />
+                                        {item.meetup.location}
+                                    </Descricao>
+                                    <Descricao>
+                                        <Icon
+                                            name="person"
+                                            size={15}
+                                            color="#999"
+                                        />
+                                        Organizador: {item.meetup.user.name}
+                                    </Descricao>
+                                </Meetup>
 
-                            <ButtonContainer
-                                onPress={() => cancelarInscricao(item.id)}
-                            >
-                                Cancelar Inscrição
-                            </ButtonContainer>
-                        </Content>
-                    )}
-                />
+                                <ButtonContainer
+                                    onPress={() => cancelarInscricao(item.id)}
+                                >
+                                    Cancelar Inscrição
+                                </ButtonContainer>
+                            </Content>
+                        )}
+                    />
+                )}
             </Container>
         </Background>
     );

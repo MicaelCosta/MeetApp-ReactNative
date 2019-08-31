@@ -11,6 +11,7 @@ import {
     Container,
     DateContainer,
     DateText,
+    Mensagem,
     ListMeetup,
     ContentMeetup,
     Image,
@@ -25,6 +26,7 @@ import api from '~/services/api';
 
 export default function Dashboard() {
     const [date, setDate] = useState(new Date());
+    const [page, setPage] = useState(1);
     const [meetups, setMeetups] = useState([]);
 
     const dataAtual = useMemo(
@@ -34,10 +36,14 @@ export default function Dashboard() {
 
     function handleSubdays() {
         setDate(subDays(date, 1));
+        setPage(1);
+        setMeetups([]);
     }
 
     function handleAdddays() {
         setDate(addDays(date, 1));
+        setPage(1);
+        setMeetups([]);
     }
 
     async function handleInscricao(meetupId) {
@@ -52,8 +58,12 @@ export default function Dashboard() {
 
     useEffect(() => {
         async function loadMeetups() {
-            const response = await api.get(`meetups?date=${date}`);
-            // const response = await api.get(`meetups`);
+            const searchDate = format(date, "yyyy'-'MM'-'dd", {
+                locale: pt,
+            });
+
+            // const response = await api.get(`meetups?date=${searchDate}&page=${page}`);
+            const response = await api.get(`meetups?date=${searchDate}`);
 
             const data = response.data.map(meetup => {
                 const dateFormatted = format(
@@ -71,10 +81,11 @@ export default function Dashboard() {
             });
 
             setMeetups(data);
+            // setMeetups([...meetups, ...data]);
         }
 
         loadMeetups();
-    }, [date]);
+    }, [date, meetups, page]);
 
     return (
         <Background>
@@ -92,53 +103,67 @@ export default function Dashboard() {
                     </TouchableOpacity>
                 </DateContainer>
 
-                <ListMeetup
-                    data={meetups}
-                    keyExtractor={item => String(item.id)}
-                    renderItem={({ item }) => (
-                        <ContentMeetup>
-                            <Image
-                                source={{
-                                    uri: item.file
-                                        ? item.file.url
-                                        : `https://api.adorable.io/avatars/285/${item.id}.png`,
-                                }}
-                            />
+                {!meetups || meetups.length <= 0 ? (
+                    <Mensagem>Nenhum Meetup para esta data</Mensagem>
+                ) : (
+                    <ListMeetup
+                        data={meetups}
+                        keyExtractor={item => String(item.id)}
+                        // onEndReached={() => setPage(page + 1)}
+                        // onEndReachedThreshold={0.1}
+                        renderItem={({ item }) => (
+                            <ContentMeetup>
+                                <Image
+                                    source={{
+                                        uri: item.file
+                                            ? item.file.url
+                                            : `https://api.adorable.io/avatars/285/${item.id}.png`,
+                                    }}
+                                />
 
-                            <Meetup>
-                                <TitleMeetup>{item.title}</TitleMeetup>
-                                <DescricaoMeetup>
-                                    <Icon name="event" size={15} color="#999" />
-                                    <InfoMeetup>
-                                        {item.dateFormatted}
-                                    </InfoMeetup>
-                                </DescricaoMeetup>
-                                <DescricaoMeetup>
-                                    <Icon name="place" size={15} color="#999" />
-                                    <InfoMeetup>{item.location}</InfoMeetup>
-                                </DescricaoMeetup>
-                                <DescricaoMeetup>
-                                    <Icon
-                                        name="person"
-                                        size={15}
-                                        color="#999"
-                                    />
-                                    <InfoMeetup>
-                                        Organizador: {item.user.name}
-                                    </InfoMeetup>
-                                </DescricaoMeetup>
-                            </Meetup>
+                                <Meetup>
+                                    <TitleMeetup>{item.title}</TitleMeetup>
+                                    <DescricaoMeetup>
+                                        <Icon
+                                            name="event"
+                                            size={15}
+                                            color="#999"
+                                        />
+                                        <InfoMeetup>
+                                            {item.dateFormatted}
+                                        </InfoMeetup>
+                                    </DescricaoMeetup>
+                                    <DescricaoMeetup>
+                                        <Icon
+                                            name="place"
+                                            size={15}
+                                            color="#999"
+                                        />
+                                        <InfoMeetup>{item.location}</InfoMeetup>
+                                    </DescricaoMeetup>
+                                    <DescricaoMeetup>
+                                        <Icon
+                                            name="person"
+                                            size={15}
+                                            color="#999"
+                                        />
+                                        <InfoMeetup>
+                                            Organizador: {item.user.name}
+                                        </InfoMeetup>
+                                    </DescricaoMeetup>
+                                </Meetup>
 
-                            {!item.past ? (
-                                <ButtonContainer
-                                    onPress={() => handleInscricao(item.id)}
-                                >
-                                    Realizar inscrição
-                                </ButtonContainer>
-                            ) : null}
-                        </ContentMeetup>
-                    )}
-                />
+                                {!item.past ? (
+                                    <ButtonContainer
+                                        onPress={() => handleInscricao(item.id)}
+                                    >
+                                        Realizar inscrição
+                                    </ButtonContainer>
+                                ) : null}
+                            </ContentMeetup>
+                        )}
+                    />
+                )}
             </Container>
         </Background>
     );

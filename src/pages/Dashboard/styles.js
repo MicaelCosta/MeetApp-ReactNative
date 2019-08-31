@@ -19,10 +19,19 @@ export const DateText = styled.Text`
     color: #fff;
 `;
 
-export const ListMeetup = styled.FlatList``;
+export const Mensagem = styled.Text`
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.6);
+    align-self: center;
+    margin-top: 20px;
+`;
+
+export const ListMeetup = styled.FlatList.attrs({
+    contentContainerStyle: { padding: 20 },
+})``;
 
 export const ContentMeetup = styled.View`
-    margin: 20px;
+    margin-bottom: 15px;
     height: 380px;
     background: #fff;
     border-radius: 4px;
